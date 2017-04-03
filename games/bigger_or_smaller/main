@@ -1,23 +1,51 @@
-def set_number attempt, attempts_limit
-  puts "Tentativa " + attempt.to_s + " de " + attempts_limit.to_s + "... Informe um numero entre 0 e 200..."
+def set_number attempt, attempts_limit, max_number
+  puts "Tentativa #{attempt} de #{attempts_limit}... Informe um numero entre 0 e #{max_number}..."
   number = gets
-  number
+  number.to_i
 end
 
-def generate_secret_number
-  puts "Definindo  um numero entre 0 e 200..."
-  secret_number = rand(200)
+def generate_secret_number max_number
+  puts "Definindo um numero entre 1 e #{max_number}..."
+  secret_number = rand max_number + 1
   puts "Número definido... agora tente adivinhá-lo...\n\n"
 
-  secret_number
+  secret_number.to_i
 
+end
+
+def set_level
+
+  puts "Qual o nível de dificuldade?"
+  puts "(1) Muito fácil (2) Fácil (3) Normal (4) Difícil (5) Impossível"
+  puts "Escolha: "
+  level = gets.to_i
+
+  case level
+    when 1
+      msg_level = "Muito fácil"
+      max_number = 30
+    when 2
+      msg_level = "Fácil"
+      max_number = 60
+    when 3
+      msg_level = "Médio"
+      max_number = 100
+    when 4
+      msg_level = "Difícil"
+      max_number = 150
+    else
+    msg_level = "Muito difícil"
+      max_number = 200
+  end
+  puts "Dificuldade da partida #{msg_level}"
+  max_number
 end
 
 def compare_numbers secret_number, number
   result = secret_number == number.to_i
 
   if result
-    puts "Parabéns, você acertou!! "
+    winner
     return true
   end
 
@@ -27,43 +55,94 @@ end
 
 def run_game attempts_limit
 
-
-  secret_number = generate_secret_number
+  score = 1000
+  max_number = set_level
+  secret_number = generate_secret_number max_number
+  shots = []
 
   for attempt in 1..attempts_limit
 
-    number = set_number attempt, attempts_limit
-    puts "Será que você acertou? Você chutou " + number
+    puts "Numeros que você já tentou: " + shots.to_s
+
+    number = set_number attempt, attempts_limit, max_number
+    shots << number
+
+    puts "Será que você acertou? Você chutou #{number}"
 
     break if compare_numbers secret_number , number
 
     if attempt < attempts_limit
-      if secret_number > number.to_i
+      if secret_number > number
         puts "Tente um numero maior!! "
       else
         puts "Tente um numero menor!! "
       end
     end
-
+    score -= (number - secret_number).abs / 2.0
   end
 
   puts "Fim de Jogo!!"
+  puts "Pontuação: #{score}"
 end
 
 def get_wellcome
-  puts "Bem vindo ao jogo..."
+  puts
+  puts "        P  /_\  P                              "
+  puts "       /_\_|_|_/_\                             "
+  puts "   n_n | ||. .|| | n_n         Bem vindo ao    "
+  puts "   |_|_|nnnn nnnn|_|_|     Jogo de Adivinhação!"
+  puts "  |' '  |  |_|  |'  ' |                        "
+  puts "  |_____| ' _ ' |_____|                        "
+  puts "        \__|_|__/                              "
+  puts
   puts "Qual o seu nome?"
-  name = gets.chomp
+  name = gets.strip
 
   puts "Bem vindo ao jogo, #{name}!!"
   puts "\nVamos iniciar o jogo..."
 end
 
+def new_game attempts_limit
+
+  loop do
+    run_game attempts_limit
+
+    puts "Deseja jogar novamente? (S/N)"
+    yes = gets.strip
+    break if yes.upcase == "N"
+  end
+
+end
+
+def winner
+
+  puts
+  puts "             OOOOOOOOOOO               "
+  puts "         OOOOOOOOOOOOOOOOOOO           "
+  puts "      OOOOOO  OOOOOOOOO  OOOOOO        "
+  puts "    OOOOOO      OOOOO      OOOOOO      "
+  puts "  OOOOOOOO  #   OOOOO  #   OOOOOOOO    "
+  puts " OOOOOOOOOO    OOOOOOO    OOOOOOOOOO   "
+  puts "OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO  "
+  puts "OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO  "
+  puts "OOOO  OOOOOOOOOOOOOOOOOOOOOOOOO  OOOO  "
+  puts " OOOO  OOOOOOOOOOOOOOOOOOOOOOO  OOOO   "
+  puts "  OOOO   OOOOOOOOOOOOOOOOOOOO  OOOO    "
+  puts "    OOOOO   OOOOOOOOOOOOOOO   OOOO     "
+  puts "      OOOOOO   OOOOOOOOO   OOOOOO      "
+  puts "         OOOOOO         OOOOOO         "
+  puts "             OOOOOOOOOOOO              "
+  puts
+  puts "       Parabéns, você acertou!         "
+  puts
+
+end
+
 def main
 
-  limit = 10
+  attempts_limit = 10
   get_wellcome
-  run_game limit
+  new_game attempts_limit
 
 end
 

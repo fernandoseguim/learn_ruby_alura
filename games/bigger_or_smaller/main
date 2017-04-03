@@ -1,0 +1,70 @@
+def set_number attempt, attempts_limit
+  puts "Tentativa " + attempt.to_s + " de " + attempts_limit.to_s + "... Informe um numero entre 0 e 200..."
+  number = gets
+  number
+end
+
+def generate_secret_number
+  puts "Definindo  um numero entre 0 e 200..."
+  secret_number = rand(200)
+  puts "Número definido... agora tente adivinhá-lo...\n\n"
+
+  secret_number
+
+end
+
+def compare_numbers secret_number, number
+  result = secret_number == number.to_i
+
+  if result
+    puts "Parabéns, você acertou!! "
+    return true
+  end
+
+  puts "Que pena, você não acertou!! "
+  false
+end
+
+def run_game attempts_limit
+
+
+  secret_number = generate_secret_number
+
+  for attempt in 1..attempts_limit
+
+    number = set_number attempt, attempts_limit
+    puts "Será que você acertou? Você chutou " + number
+
+    break if compare_numbers secret_number , number
+
+    if attempt < attempts_limit
+      if secret_number > number.to_i
+        puts "Tente um numero maior!! "
+      else
+        puts "Tente um numero menor!! "
+      end
+    end
+
+  end
+
+  puts "Fim de Jogo!!"
+end
+
+def get_wellcome
+  puts "Bem vindo ao jogo..."
+  puts "Qual o seu nome?"
+  name = gets.chomp
+
+  puts "Bem vindo ao jogo, #{name}!!"
+  puts "\nVamos iniciar o jogo..."
+end
+
+def main
+
+  limit = 10
+  get_wellcome
+  run_game limit
+
+end
+
+main

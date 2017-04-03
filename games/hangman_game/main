@@ -1,0 +1,111 @@
+def get_welcome
+
+  puts "Welcome to hangman game!!"
+  puts "What's your name?"
+  name = gets.strip
+
+  puts "\n\n\n"
+  puts "Welcome the hangman game #{name}! Please wait while the game starting..."
+end
+
+def get_secret_word
+
+  puts "Choosing the secret word..."
+  secret_word = "programmer"
+
+  puts "Secret word with #{secret_word.size} letters... good luck!"
+  secret_word
+end
+
+def set_attempt errors, list_words
+  puts "\n\n\n"
+  puts "Your errors up to now: #{errors}"
+  puts "Your attempts up to now: #{list_words}"
+  puts "Try choose a word or letter..."
+  attempt = gets.strip
+
+  puts "Did you get it right? You attempted the word \"#{attempt}\"..."
+  attempt
+end
+
+def compare_words secret_word, word, score, errors
+
+  if secret_word == word
+    puts "Congratulations! You have discovered the word!"
+    puts "\\o/\\o/\\o/\\o/\\o/\\o/\\o/\\o/\\o/\\o/\\o/\\o/\\o/\\o/\\o/"
+    score += 100
+    return true, score
+  end
+    puts "So sorry... it was not this time!!"
+    score -= 30
+    errors += 1
+  return false, score, errors
+end
+
+def find_letter secret_word, letter, score, errors
+
+  count = 0
+  for i in 0...secret_word.size
+    if letter == secret_word[i]
+      count += 1
+    end
+  end
+
+  if count > 0
+    puts "You are luck! The secret word contains #{count} letters \"#{letter}\"."
+    score += 10
+  else
+    puts "So sorry! The secret word not contains the letter \"#{letter}\""
+    score -= 5
+    errors += 1
+  end
+
+  return score, errors
+end
+
+def run_game attempts_limit
+
+  secret_word = get_secret_word
+
+  errors = 0
+  list_words = []
+  score = 0
+
+  while errors < attempts_limit
+    attempt = set_attempt errors, list_words
+    list_words << attempt
+
+    if attempt.size == 1
+      score, errors = find_letter secret_word, attempt, score, errors
+
+    else
+      hit, score, errors = compare_words secret_word, attempt, score, errors
+      break if hit
+
+    end
+
+  end
+
+  puts "Your score is #{score} points."
+
+end
+
+def new_game
+  attempts_limit = 5
+
+  get_welcome
+
+  loop do
+    run_game attempts_limit
+    puts "You wish play again? (Y/N)"
+    yes = gets.strip
+    break if yes.upcase == "N"
+  end
+
+end
+
+def main
+  new_game
+end
+
+main
